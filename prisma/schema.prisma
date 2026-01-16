@@ -1,0 +1,208 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  SINDICO
+  MORADOR
+}
+
+enum ComplaintCategory {
+  INFRAESTRUTURA
+  LIMPEZA
+  SEGURANCA
+  CONVENIENCIA
+  ADMINISTRATIVO
+  OUTROS
+}
+
+enum ComplaintUrgency {
+  BAIXA
+  MEDIA
+  ALTA
+  CRITICA
+}
+
+enum ComplaintStatus {
+  PENDENTE
+  EM_ANALISE
+  RESOLVIDA
+  REJEITADA
+}
+
+enum SupportedMimeType {
+  IMAGE_JPEG
+  IMAGE_PNG
+  IMAGE_WEBP
+  VIDEO_MP4
+  VIDEO_WEBM
+  AUDIO_MP3
+  AUDIO_WAV
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  cpf       String   @unique
+  password  String
+  name      String
+  role      Role     @default(MORADOR)
+  block     String?
+  apartment String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  complaints Complaint[] // Relação com reclamações
+  statusChanges ComplaintStatusHistory[] // Relação com mudanças de status
+  auditLogs AuditLog[] // Relação com logs de auditoria
+  internalComments InternalComment[] // Relação com comentários internos
+
+  @@map("users")
+}
+
+model Complaint {
+  id          String            @id @default(uuid())
+  authorId    String            // ID do autor - sempre salvo, mas pode ser ocultado
+  category    ComplaintCategory
+  description String
+  urgency     ComplaintUrgency
+  status      ComplaintStatus   @default(PENDENTE)
+  isAnonymous Boolean           @default(false) // Se deve exibir como anônimo
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  deletedAt   DateTime?
+
+  author      User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  evidences    ComplaintEvidence[]
+  statusHistory ComplaintStatusHistory[]
+  internalComments InternalComment[] // Relação com comentários internos
+  kanbanCard  KanbanCard?       // Relação com card do kanban
+
+  @@map("complaints")
+}
+
+model ComplaintEvidence {
+  id           String            @id @default(uuid())
+  complaintId  String
+  originalName String
+  mimeType     SupportedMimeType
+  size         Int
+  fileName     String            @unique // nome único do arquivo no storage
+  uploadedAt   DateTime          @default(now())
+
+  complaint    Complaint         @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+
+  @@map("complaint_evidences")
+}
+
+model ComplaintStatusHistory {
+  id            String          @id @default(uuid())
+  complaintId   String
+  previousStatus ComplaintStatus
+  newStatus     ComplaintStatus
+  changedBy     String          // ID do usuário que fez a mudança
+  changedAt     DateTime        @default(now())
+  reason        String?         // Motivo opcional da mudança
+
+  complaint     Complaint       @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  user          User            @relation(fields: [changedBy], references: [id], onDelete: Cascade)
+
+  @@map("complaint_status_history")
+}
+
+enum AuditAction {
+  COMPLAINT_STATUS_CHANGED
+  COMPLAINT_DELETED
+  INTERNAL_COMMENT_ADDED
+  INTERNAL_COMMENT_UPDATED
+  INTERNAL_COMMENT_DELETED
+  USER_DELETED
+}
+
+model AuditLog {
+  id          String      @id @default(uuid())
+  action      AuditAction
+  entityType  String      // Tipo da entidade afetada (complaint, user, etc.)
+  entityId    String      // ID da entidade afetada
+  performedBy String      // ID do usuário que executou a ação
+  details     Json?       // Detalhes adicionais da ação (antes/depois, etc.)
+  ipAddress   String?     // Endereço IP do usuário
+  userAgent   String?     // User agent do navegador/dispositivo
+  createdAt   DateTime    @default(now())
+
+  user        User        @relation(fields: [performedBy], references: [id], onDelete: Cascade)
+
+  @@map("audit_logs")
+}
+
+model InternalComment {
+  id          String   @id @default(uuid())
+  complaintId String
+  authorId    String   // ID do usuário que criou o comentário (sempre gestor)
+  content     String   // Conteúdo do comentário
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  complaint   Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("internal_comments")
+}
+
+// Kanban entities for real-time board management
+model KanbanBoard {
+  id        String   @id @default(uuid())
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  columns KanbanColumn[]
+  cards   KanbanCard[]
+
+  @@map("kanban_boards")
+}
+
+model KanbanColumn {
+  id      String @id @default(uuid())
+  title   String
+  boardId String
+  order   Int    @default(0)
+
+  board KanbanBoard @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cards KanbanCard[]
+
+  @@map("kanban_columns")
+}
+
+model KanbanCard {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  columnId    String
+  boardId     String
+  order       Int      @default(0)
+  complaintId String?  @unique // Vincula com Complaint existente (opcional)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  board     KanbanBoard @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  column    KanbanColumn @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  complaint Complaint?  @relation(fields: [complaintId], references: [id], onDelete: SetNull)
+
+  @@map("kanban_cards")
+}
+
+// Adicionar relação reversa na Complaint existente

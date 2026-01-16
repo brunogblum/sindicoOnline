@@ -1,0 +1,259 @@
+/* Detalhes da Reclamação */
+.complaint-details-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #212529;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #868e96;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 32px;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #228be6;
+}
+
+.details-header {
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.header-left h1 {
+    margin: 0 0 8px 0;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1a1b1e;
+}
+
+.complaint-full-id {
+    font-family: 'JetBrains Mono', monospace;
+    color: #adb5bd;
+    font-size: 0.9rem;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 32px;
+}
+
+/* Seções de Conteúdo */
+.details-section {
+    background: white;
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 32px;
+    border: 1px solid #e9ecef;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.description-text {
+    line-height: 1.8;
+    color: #495057;
+    white-space: pre-wrap;
+}
+
+/* Sidebar Info */
+.info-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.info-item label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #868e96;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+}
+
+.status-badge-large {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.status-badge-large.status-pendente {
+    background: #fff9db;
+    color: #f08c00;
+}
+
+.status-badge-large.status-em_analise {
+    background: #e7f5ff;
+    color: #228be6;
+}
+
+.status-badge-large.status-resolvida {
+    background: #ebfbee;
+    color: #40c057;
+}
+
+.status-badge-large.status-rejeitada {
+    background: #fff5f5;
+    color: #fa5252;
+}
+
+/* Histórico */
+.history-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-left: 12px;
+}
+
+.history-item {
+    position: relative;
+    padding: 0 0 32px 32px;
+    border-left: 2px solid #e9ecef;
+}
+
+.history-item:last-child {
+    border-left-color: transparent;
+    padding-bottom: 0;
+}
+
+.history-item::before {
+    content: "";
+    position: absolute;
+    left: -7px;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #adb5bd;
+}
+
+.history-item.active::before {
+    border-color: #228be6;
+    background: #228be6;
+}
+
+.history-date {
+    font-size: 0.8rem;
+    color: #868e96;
+    margin-bottom: 4px;
+}
+
+.history-content {
+    font-size: 0.95rem;
+}
+
+.history-reason {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #495057;
+    background: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-style: italic;
+}
+
+/* Comentários */
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.comment-item {
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.comment-author {
+    font-weight: 700;
+}
+
+.comment-date {
+    color: #868e96;
+}
+
+/* Estados de Interface */
+.loading-state,
+.error-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    font-size: 1.2rem;
+    color: #868e96;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.error-state {
+    color: #fa5252;
+}
+
+/* Evidências */
+.evidences-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.evidence-card {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f8f9fa;
+}
+
+.evidence-preview {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e9ecef;
+    font-size: 0.8rem;
+    padding: 8px;
+    text-align: center;
+    word-break: break-all;
+}
+
+.evidence-info {
+    padding: 8px;
+    font-size: 0.75rem;
+    color: #868e96;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+}

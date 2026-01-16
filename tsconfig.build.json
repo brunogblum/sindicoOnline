@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./build-dist",
+    "declaration": false,
+    "sourceMap": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build-dist",
+    "frontend",
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ]
+}
+
+

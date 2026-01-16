@@ -1,0 +1,329 @@
+/* Feed de Reclamações Moderno */
+.complaint-feed-modern {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.feed-header-modern {
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Filtros de Status Discretos */
+.status-filters-discrete {
+  display: flex;
+  gap: 8px;
+  background: #f1f3f5;
+  padding: 4px;
+  border-radius: 12px;
+}
+
+.status-filters-discrete button {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: #495057;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.status-filters-discrete button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.status-filters-discrete button.active {
+  background: white;
+  color: #228be6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Grid de Reclamações */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.complaint-card.minimalist {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 16px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.complaint-card.minimalist:hover {
+  background-color: #f1f3f5;
+  border-color: #228be6;
+  box-shadow: 0 0 0 1px #228be6;
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.complaint-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: #adb5bd;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-left: auto;
+}
+
+.status-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.status-dot.status-pendente {
+  background: #fab005;
+}
+
+.status-text.status-pendente {
+  color: #fab005;
+}
+
+.status-dot.status-em_analise {
+  background: #228be6;
+}
+
+.status-text.status-em_analise {
+  color: #228be6;
+}
+
+.status-dot.status-resolvida {
+  background: #40c057;
+}
+
+.status-text.status-resolvida {
+  color: #40c057;
+}
+
+.status-dot.status-rejeitada {
+  background: #fa5252;
+}
+
+.status-text.status-rejeitada {
+  color: #fa5252;
+}
+
+.card-content {
+  flex-grow: 1;
+}
+
+.complaint-description {
+  margin: 0;
+  color: #343a40;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid #f1f3f5;
+}
+
+.card-tags {
+  display: flex;
+  gap: 8px;
+}
+
+.tag {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.tag.category {
+  background: #f1f3f5;
+  color: #495057;
+}
+
+.tag.urgency-baixa {
+  background: #e6fffa;
+  color: #087f5b;
+}
+
+.tag.urgency-media {
+  background: #fff9db;
+  color: #f08c00;
+}
+
+.tag.urgency-alta {
+  background: #fff5f5;
+  color: #e03131;
+}
+
+.tag.urgency-critica {
+  background: #c92a2a;
+  color: white;
+}
+
+.card-date {
+  font-size: 0.8rem;
+  color: #868e96;
+}
+
+/* Banner de Erro */
+.error-banner {
+  grid-column: 1 / -1;
+  background: #fff5f5;
+  color: #f03e3e;
+  padding: 16px 24px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  border: 1px solid #ffa8a8;
+}
+
+.error-banner button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #f03e3e;
+  cursor: pointer;
+}
+
+/* Estado Vazio */
+.empty-state-modern {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80px 40px;
+  background: white;
+  border-radius: 24px;
+  border: 2px dashed #e9ecef;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state-modern h3 {
+  margin: 0 0 8px 0;
+  color: #212529;
+}
+
+.empty-state-modern p {
+  margin: 0;
+  color: #868e96;
+}
+
+/* Paginação */
+.pagination-modern {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.pagination-modern button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #dee2e6;
+  background: white;
+  color: #495057;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all 0.2s;
+}
+
+.pagination-modern button:hover:not(:disabled) {
+  border-color: #228be6;
+  color: #228be6;
+}
+
+.pagination-modern button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-weight: 600;
+  color: #495057;
+}
+
+/* Shimmer Loading */
+.loading-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.shimmer-card {
+  height: 200px;
+  background: #f8f9fa;
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 768px) {
+  .complaint-feed-modern {
+    padding: 24px 16px;
+  }
+
+  .status-filters-discrete {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+}
