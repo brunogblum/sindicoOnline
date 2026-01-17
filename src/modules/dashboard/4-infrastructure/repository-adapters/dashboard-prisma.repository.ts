@@ -42,9 +42,91 @@ export class DashboardPrismaRepository implements DashboardRepositoryContract {
             count: group._count.category
         }));
 
+        // Average Response Time
+        const complaints = await this.prisma.complaint.findMany({
+            where: authorId ? { authorId, deletedAt: null } : { deletedAt: null },
+            include: {
+                statusHistory: {
+                    orderBy: { changedAt: 'asc' },
+                    where: {
+                        previousStatus: 'PENDENTE'
+                    }
+                },
+                internalComments: {
+                    orderBy: { createdAt: 'asc' },
+                    take: 1
+                }
+            }
+        });
+
+        const respondedTimes = complaints.map(complaint => {
+            const firstStatusChange = complaint.statusHistory[0]?.changedAt;
+            const firstComment = complaint.internalComments[0]?.createdAt;
+
+            let responseDate: Date | null = null;
+            if (firstStatusChange && firstComment) {
+                responseDate = firstStatusChange < firstComment ? firstStatusChange : firstComment;
+            } else {
+                responseDate = firstStatusChange || firstComment || null;
+            }
+
+            if (responseDate) {
+                return responseDate.getTime() - complaint.createdAt.getTime();
+            }
+            return null;
+        }).filter((time): time is number => time !== null);
+
+        const averageResponseTime = respondedTimes.length > 0
+            ? respondedTimes.reduce((acc, current) => acc + current, 0) / respondedTimes.length
+            : null;
+
+        // Alerts (only for Morador dashboard)
+        const alerts: any[] = [];
+        if (authorId) {
+            // 1. Pending Response Alert
+            // Check if any status in distribution is PENDENTE or EM_ANALISE with count > 0
+            const hasPendingOrInAnalysis = statusDistribution.some(
+                s => (s.status === 'PENDENTE' || s.status === 'EM_ANALISE') && s.count > 0
+            );
+            if (hasPendingOrInAnalysis) {
+                alerts.push({
+                    type: 'PENDING_RESPONSE',
+                    message: 'Você possui reclamações aguardando resposta'
+                });
+            }
+
+            // 2. Recent Update Alert
+            // Check status changes in the last 24h for this author's complaints
+            const date24hAgo = new Date();
+            date24hAgo.setHours(date24hAgo.getHours() - 24);
+
+            const recentStatusChanges = await this.prisma.complaintStatusHistory.findFirst({
+                where: {
+                    complaint: {
+                        authorId,
+                    },
+                    changedAt: {
+                        gte: date24hAgo
+                    },
+                    newStatus: {
+                        in: ['RESOLVIDA', 'REJEITADA', 'EM_ANALISE']
+                    }
+                }
+            });
+
+            if (recentStatusChanges) {
+                alerts.push({
+                    type: 'RECENT_UPDATE',
+                    message: 'Uma ou mais reclamações suas foram atualizadas recentemente'
+                });
+            }
+        }
+
         return DashboardMetrics.create({
             statusDistribution,
-            categoryDistribution
+            categoryDistribution,
+            averageResponseTime,
+            alerts
         });
     }
 }

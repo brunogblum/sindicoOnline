@@ -16,6 +16,14 @@ export class CategoryDistributionDto {
     count: number;
 }
 
+export class DashboardAlertDto {
+    @Expose()
+    type: string;
+
+    @Expose()
+    message: string;
+}
+
 export class GetDashboardMetricsResponseDto {
     @Expose()
     @Type(() => StatusDistributionDto)
@@ -24,4 +32,11 @@ export class GetDashboardMetricsResponseDto {
     @Expose()
     @Type(() => CategoryDistributionDto)
     categoryDistribution: CategoryDistributionDto[];
+
+    @Expose()
+    @Type(() => DashboardAlertDto)
+    alerts: DashboardAlertDto[];
+
+    @Expose()
+    averageResponseTime: number | null;
 }

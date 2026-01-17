@@ -4,10 +4,19 @@ import {
     Users,
     History,
     LogOut,
+    Bell,
 } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 
 import { cn } from "@/shared/utils/utils"
+import { useNotifications } from "@/presentation/hooks/useNotifications"
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/presentation/views/components/ui/sheet"
 import {
     Sidebar,
     SidebarContent,
@@ -17,6 +26,7 @@ import {
     SidebarGroupContent,
     SidebarGroupLabel,
     SidebarMenu,
+    SidebarMenuBadge,
     SidebarMenuButton,
     SidebarMenuItem,
     useSidebar,
@@ -25,6 +35,7 @@ import useAuth from "@/application/usecases/useAuth"
 
 export function AppSidebar() {
     const { user, logout } = useAuth()
+    const { alerts, count } = useNotifications()
     const location = useLocation()
     const { state } = useSidebar()
     const isCollapsed = state === "collapsed"
@@ -110,6 +121,74 @@ export function AppSidebar() {
                             )}
                         </div>
                     </SidebarMenuItem>
+
+                    {/* Notificações */}
+                    {user?.role === 'MORADOR' && (
+                        <SidebarMenuItem>
+                            <Sheet>
+                                <SheetTrigger asChild>
+                                    <SidebarMenuButton
+                                        tooltip="Notificações"
+                                        className="w-full justify-start"
+                                    >
+                                        <div className="relative">
+                                            <Bell className="h-4 w-4" />
+                                            {count > 0 && isCollapsed && (
+                                                <span className="absolute -top-1.5 -right-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground animate-in fade-in zoom-in">
+                                                    {count}
+                                                </span>
+                                            )}
+                                        </div>
+                                        {!isCollapsed && <span className="flex-1">Notificações</span>}
+                                        {count > 0 && !isCollapsed && (
+                                            <SidebarMenuBadge className="bg-destructive text-destructive-foreground">
+                                                {count}
+                                            </SidebarMenuBadge>
+                                        )}
+                                    </SidebarMenuButton>
+                                </SheetTrigger>
+                                <SheetContent
+                                    side="left"
+                                    className="w-[300px] sm:w-[400px]"
+                                    onCloseAutoFocus={(e) => e.preventDefault()}
+                                >
+                                    <SheetHeader className="border-b pb-4 mb-4">
+                                        <SheetTitle className="flex items-center gap-2">
+                                            <Bell className="h-5 w-5" />
+                                            Notificações
+                                        </SheetTitle>
+                                    </SheetHeader>
+                                    <div className="flex flex-col gap-4">
+                                        {count === 0 ? (
+                                            <p className="text-sm text-muted-foreground text-center py-8">
+                                                Nenhuma notificação importante no momento.
+                                            </p>
+                                        ) : (
+                                            alerts.map((alert, index) => (
+                                                <div
+                                                    key={index}
+                                                    className={cn(
+                                                        "p-4 rounded-lg border flex gap-3 transition-colors",
+                                                        alert.type === 'PENDING_RESPONSE'
+                                                            ? "bg-yellow-50 border-yellow-100 text-yellow-800"
+                                                            : "bg-blue-50 border-blue-100 text-blue-800"
+                                                    )}
+                                                >
+                                                    <span className="text-lg">
+                                                        {alert.type === 'PENDING_RESPONSE' ? '⌛' : '🔔'}
+                                                    </span>
+                                                    <p className="text-sm font-medium leading-tight">
+                                                        {alert.message}
+                                                    </p>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </SheetContent>
+                            </Sheet>
+                        </SidebarMenuItem>
+                    )}
+
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             onClick={logout}

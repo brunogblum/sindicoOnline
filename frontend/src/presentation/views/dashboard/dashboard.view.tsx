@@ -48,6 +48,24 @@ const DashboardView: React.FC = () => {
         }
     };
 
+    const formatResponseTime = (ms: number | null) => {
+        if (ms === null || ms === undefined) return "Sem dados suficientes";
+
+        const totalMinutes = Math.floor(ms / (1000 * 60));
+        const totalHours = Math.floor(totalMinutes / 60);
+
+        if (totalHours < 1) {
+            return `${totalMinutes} ${totalMinutes === 1 ? 'minuto' : 'minutos'}`;
+        }
+
+        if (totalHours < 48) {
+            return `${totalHours} ${totalHours === 1 ? 'hora' : 'horas'}`;
+        }
+
+        const days = Math.floor(totalHours / 24);
+        return `${days} ${days === 1 ? 'dia' : 'dias'}`;
+    };
+
     return (
         <div className="dashboard-modern-container">
             <header className="dashboard-header">
@@ -80,6 +98,12 @@ const DashboardView: React.FC = () => {
                     value={resolvedComplaints}
                     icon="✅"
                     color="#40c057"
+                />
+                <Card
+                    title="Tempo Médio de Resposta"
+                    value={formatResponseTime(metrics.averageResponseTime)}
+                    icon="🕒"
+                    color="#228be6"
                 />
             </div>
 

@@ -47,6 +47,57 @@
     box-shadow: 0 6px 16px rgba(34, 139, 230, 0.3);
 }
 
+/* Alertas Importantes */
+.dashboard-alerts-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.dashboard-alert-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    animation: slideIn 0.3s ease-out;
+    border: 1px solid transparent;
+}
+
+.alert-pending_response {
+    background-color: #fff9db;
+    border-color: #ffe066;
+    color: #856404;
+}
+
+.alert-recent_update {
+    background-color: #e7f5ff;
+    border-color: #a5d8ff;
+    color: #004085;
+}
+
+.alert-icon {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Grid de KPis */
 .kpi-grid {
     display: grid;

@@ -29,6 +29,8 @@ export class DashboardController {
         const response = new GetDashboardMetricsResponseDto();
         response.statusDistribution = metrics.statusDistribution;
         response.categoryDistribution = metrics.categoryDistribution;
+        response.averageResponseTime = metrics.averageResponseTime;
+        response.alerts = metrics.alerts;
 
         return response;
     }
