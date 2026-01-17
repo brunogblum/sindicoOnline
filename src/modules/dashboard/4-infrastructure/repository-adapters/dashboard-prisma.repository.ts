@@ -1,5 +1,6 @@
 import { DashboardRepositoryContract } from '../../1-domain/contracts/dashboard.repository.contract';
 import { DashboardMetrics } from '../../1-domain/value-objects/dashboard-metrics.value-object';
+import { LastAdministrativeUpdate } from '../../1-domain/value-objects/last-administrative-update.value-object';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 export class DashboardPrismaRepository implements DashboardRepositoryContract {
@@ -127,6 +128,73 @@ export class DashboardPrismaRepository implements DashboardRepositoryContract {
             categoryDistribution,
             averageResponseTime,
             alerts
+        });
+    }
+
+    async getLastAdministrativeUpdate(userId: string): Promise<LastAdministrativeUpdate | null> {
+        const dateLimit = new Date();
+        dateLimit.setDate(dateLimit.getDate() - 3); // Considerar apenas os últimos 3 dias como "recente"
+
+        // Find latest status change not by user
+        const lastStatusChange = await this.prisma.complaintStatusHistory.findFirst({
+            where: {
+                complaint: { authorId: userId },
+                changedBy: { not: userId },
+                changedAt: { gte: dateLimit }
+            },
+            orderBy: { changedAt: 'desc' },
+            include: { complaint: true }
+        });
+
+        // Find latest comment not by user
+        const lastComment = await this.prisma.internalComment.findFirst({
+            where: {
+                complaint: { authorId: userId },
+                authorId: { not: userId },
+                createdAt: { gte: dateLimit }
+            },
+            orderBy: { createdAt: 'desc' },
+            include: { complaint: true }
+        });
+
+        if (!lastStatusChange && !lastComment) return null;
+
+        let mostRecent: any;
+        let type: 'STATUS_CHANGE' | 'NEW_COMMENT';
+
+        const lastStatusChangeDate = lastStatusChange?.changedAt || new Date(0);
+        const lastCommentDate = lastComment?.createdAt || new Date(0);
+
+        if (lastStatusChangeDate >= lastCommentDate) {
+            mostRecent = lastStatusChange;
+            type = 'STATUS_CHANGE';
+        } else {
+            mostRecent = lastComment;
+            type = 'NEW_COMMENT';
+        }
+
+        const formatStatus = (status: string) => {
+            const map: Record<string, string> = {
+                'PENDENTE': 'Pendente',
+                'EM_ANALISE': 'Em análise',
+                'RESOLVIDA': 'Resolvida',
+                'REJEITADA': 'Rejeitada'
+            };
+            return map[status] || status;
+        };
+
+        return LastAdministrativeUpdate.create({
+            complaintId: mostRecent.complaintId,
+            complaintTitle: mostRecent.complaint.description.length > 50
+                ? mostRecent.complaint.description.substring(0, 50) + '...'
+                : mostRecent.complaint.description,
+            type,
+            detail: type === 'STATUS_CHANGE'
+                ? `Status alterado de ${formatStatus(mostRecent.previousStatus)} para ${formatStatus(mostRecent.newStatus)}`
+                : mostRecent.content.length > 100
+                    ? mostRecent.content.substring(0, 100) + '...'
+                    : mostRecent.content,
+            occurredAt: type === 'STATUS_CHANGE' ? mostRecent.changedAt : mostRecent.createdAt
         });
     }
 }

@@ -2,14 +2,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDashboardViewModel } from '../../viewmodels/dashboard/dashboard.view-model';
 import useAuth from '../../../application/usecases/useAuth';
+import LastUpdateIndicator from './components/LastUpdateIndicator';
 import './dashboard.css';
 
 const DashboardView: React.FC = () => {
-    const { metrics, loading, error, reload } = useDashboardViewModel();
+    const { metrics, lastUpdate, loading, error, reload } = useDashboardViewModel();
     const { user } = useAuth();
     const isMorador = user?.role === 'MORADOR';
 
     if (loading) {
+        // ... (manter loading)
         return (
             <div className="loading-view">
                 <div className="loading-spinner-modern"></div>
@@ -19,6 +21,7 @@ const DashboardView: React.FC = () => {
     }
 
     if (error) {
+        // ... (manter error)
         return (
             <div className="error-view">
                 <h3>Ops! Algo deu errado</h3>
@@ -32,12 +35,12 @@ const DashboardView: React.FC = () => {
 
     if (!metrics) return null;
 
-    // Calculate totals for KPIs
+    // ... (manter lógica de totals e helpers)
+
     const totalComplaints = metrics.statusDistribution.reduce((acc, curr) => acc + curr.count, 0);
     const resolvedComplaints = metrics.statusDistribution.find(s => s.status === 'RESOLVIDA')?.count || 0;
     const pendingComplaints = metrics.statusDistribution.find(s => s.status === 'PENDENTE')?.count || 0;
 
-    // Helper to get color for status
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'RESOLVIDA': return '#40c057';
@@ -50,18 +53,10 @@ const DashboardView: React.FC = () => {
 
     const formatResponseTime = (ms: number | null) => {
         if (ms === null || ms === undefined) return "Sem dados suficientes";
-
         const totalMinutes = Math.floor(ms / (1000 * 60));
         const totalHours = Math.floor(totalMinutes / 60);
-
-        if (totalHours < 1) {
-            return `${totalMinutes} ${totalMinutes === 1 ? 'minuto' : 'minutos'}`;
-        }
-
-        if (totalHours < 48) {
-            return `${totalHours} ${totalHours === 1 ? 'hora' : 'horas'}`;
-        }
-
+        if (totalHours < 1) return `${totalMinutes} ${totalMinutes === 1 ? 'minuto' : 'minutos'}`;
+        if (totalHours < 48) return `${totalHours} ${totalHours === 1 ? 'hora' : 'horas'}`;
         const days = Math.floor(totalHours / 24);
         return `${days} ${days === 1 ? 'dia' : 'dias'}`;
     };
@@ -79,6 +74,8 @@ const DashboardView: React.FC = () => {
                     </Link>
                 )}
             </header>
+
+            {isMorador && lastUpdate && <LastUpdateIndicator update={lastUpdate} />}
 
             {/* KPIs */}
             <div className="kpi-grid">

@@ -1,0 +1,109 @@
+.last-update-link-wrapper {
+    text-decoration: none;
+    display: block;
+    margin-bottom: 2rem;
+}
+
+.last-update-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    animation: slideDown 0.5s ease-out;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.last-update-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    border-color: rgba(121, 80, 242, 0.2);
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.last-update-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #7950f2;
+}
+
+.last-update-icon {
+    font-size: 1.5rem;
+    background: rgba(121, 80, 242, 0.1);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+.last-update-content {
+    flex: 1;
+}
+
+.last-update-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.last-update-type {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #7950f2;
+    letter-spacing: 0.05em;
+}
+
+.last-update-time {
+    font-size: 0.75rem;
+    color: #868e96;
+}
+
+.last-update-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    color: #212529;
+}
+
+.last-update-detail {
+    font-size: 0.875rem;
+    color: #495057;
+    margin: 0;
+}
+
+.last-update-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #7950f2;
+    color: white;
+    font-size: 0.625rem;
+    font-weight: 800;
+    padding: 2px 12px;
+    border-bottom-left-radius: 12px;
+}
