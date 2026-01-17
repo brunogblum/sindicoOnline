@@ -14,8 +14,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: any) {
-        // payload should contain sub (userId) and username (email) and role
-        // We use 'id' to match the expectations of controllers and interceptors
-        return { id: payload.sub, email: payload.username, role: payload.role };
+        // payload should contain sub (userId), username (email), role and condominiumId
+        return {
+            id: payload.sub,
+            email: payload.username,
+            role: payload.role,
+            condominiumId: payload.condominiumId
+        };
     }
 }

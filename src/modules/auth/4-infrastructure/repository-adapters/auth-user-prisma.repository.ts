@@ -44,6 +44,7 @@ export class AuthUserPrismaRepository implements AuthUserRepositoryContract {
             prismaUser.password, // This is the hashed password from DB
             prismaUser.name,
             UserRole[prismaUser.role as keyof typeof UserRole],
+            prismaUser.condominiumId,
         );
     }
 }

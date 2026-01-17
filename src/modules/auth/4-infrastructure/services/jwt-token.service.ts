@@ -9,7 +9,8 @@ export class JwtTokenService implements TokenServiceContract {
         const payload = {
             sub: user.id,
             username: user.email,
-            role: user.role
+            role: user.role,
+            condominiumId: user.condominiumId
         };
         return this.jwtService.signAsync(payload);
     }

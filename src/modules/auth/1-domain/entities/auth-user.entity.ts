@@ -12,6 +12,7 @@ export class AuthUser {
         private readonly _passwordHash: string,
         private readonly _name: string,
         private readonly _role: UserRole,
+        private readonly _condominiumId: string | null,
     ) { }
 
     get id(): string {
@@ -34,13 +35,18 @@ export class AuthUser {
         return this._role;
     }
 
+    get condominiumId(): string | null {
+        return this._condominiumId;
+    }
+
     static create(
         id: string,
         email: string,
         passwordHash: string,
         name: string,
         role: UserRole,
+        condominiumId: string | null = null,
     ): AuthUser {
-        return new AuthUser(id, email, passwordHash, name, role);
+        return new AuthUser(id, email, passwordHash, name, role, condominiumId);
     }
 }

@@ -8,6 +8,7 @@ import { ComplaintsModule } from './modules/complaints/complaints.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { KanbanModule } from './modules/kanban/kanban.module';
+import { InstitutionalMessageModule } from './modules/institutional-message/institutional-message.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { KanbanModule } from './modules/kanban/kanban.module';
     ComplaintsModule,
     DashboardModule,
     KanbanModule,
+    InstitutionalMessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,7 +1,7 @@
 import type { DashboardRepositoryContract } from '../../../domain/dashboard/contracts/dashboard.repository.contract';
 import type { DashboardMetrics } from '../../../domain/dashboard/dashboard-metrics.entity';
 import type { LastUpdate } from '../../../domain/dashboard/last-update.entity';
-import { apiClient } from '../api-client';
+import apiClient from '../auth-interceptor';
 
 export class DashboardApiAdapter implements DashboardRepositoryContract {
     async getMetrics(): Promise<DashboardMetrics> {

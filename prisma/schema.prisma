@@ -60,16 +60,47 @@ model User {
   role      Role     @default(MORADOR)
   block     String?
   apartment String?
+  condominiumId String? // ID do condomínio ao qual o usuário pertence
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
 
+  condominium Condominium? @relation(fields: [condominiumId], references: [id])
   complaints Complaint[] // Relação com reclamações
   statusChanges ComplaintStatusHistory[] // Relação com mudanças de status
   auditLogs AuditLog[] // Relação com logs de auditoria
   internalComments InternalComment[] // Relação com comentários internos
+  institutionalMessages InstitutionalMessage[] // Mensagens criadas pelo síndico
 
   @@map("users")
+}
+
+model Condominium {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users                 User[]
+  institutionalMessages InstitutionalMessage[]
+
+  @@map("condominiums")
+}
+
+model InstitutionalMessage {
+  id            String    @id @default(uuid())
+  content       String
+  authorId      String
+  condominiumId String
+  isActive      Boolean   @default(true)
+  expiresAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  author      User        @relation(fields: [authorId], references: [id])
+  condominium Condominium @relation(fields: [condominiumId], references: [id])
+
+  @@map("institutional_messages")
 }
 
 model Complaint {

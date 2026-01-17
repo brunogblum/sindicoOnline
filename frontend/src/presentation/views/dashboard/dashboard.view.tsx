@@ -3,12 +3,16 @@ import { Link } from 'react-router-dom';
 import { useDashboardViewModel } from '../../viewmodels/dashboard/dashboard.view-model';
 import useAuth from '../../../application/usecases/useAuth';
 import LastUpdateIndicator from './components/LastUpdateIndicator';
+import InstitutionalMessageCard from './components/InstitutionalMessageCard';
 import './dashboard.css';
 
 const DashboardView: React.FC = () => {
-    const { metrics, lastUpdate, loading, error, reload } = useDashboardViewModel();
+    const { metrics, lastUpdate, institutionalMessage, loading, error, reload } = useDashboardViewModel();
     const { user } = useAuth();
     const isMorador = user?.role === 'MORADOR';
+
+    console.log('[DashboardView] isMorador:', isMorador);
+    console.log('[DashboardView] institutionalMessage:', institutionalMessage);
 
     if (loading) {
         // ... (manter loading)
@@ -74,6 +78,8 @@ const DashboardView: React.FC = () => {
                     </Link>
                 )}
             </header>
+
+            {isMorador && institutionalMessage && <InstitutionalMessageCard message={institutionalMessage} />}
 
             {isMorador && lastUpdate && <LastUpdateIndicator update={lastUpdate} />}
 
